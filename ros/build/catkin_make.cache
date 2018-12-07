@@ -1,0 +1,2 @@
+localization:perception/detection:perception/segmentation
+-DCMAKE_BUILD_TYPE=Release -DCATKIN_DEVEL_PREFIX=/home/smartcar/Harddisk/ubundisk/autonomous_carla/ros/devel -DCMAKE_INSTALL_PREFIX=/home/smartcar/Harddisk/ubundisk/autonomous_carla/ros/install -G Unix Makefiles
