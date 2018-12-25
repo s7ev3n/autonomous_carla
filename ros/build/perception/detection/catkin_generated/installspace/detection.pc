@@ -1,8 +1,0 @@
-prefix=/home/smartcar/Harddisk/ubundisk/autonomous_carla/ros/install
-
-Name: detection
-Description: Description of detection
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/smartcar/Harddisk/ubundisk/autonomous_carla/ros/install/lib 
-Requires: 
