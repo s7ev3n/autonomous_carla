@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "",
+                "limitSymbolsToIncludedHeaders": true
+            },
+            "includePath": [
+                "/home/smartcar/harddisk/ubundisk/repos/autonomous_carla/ros/devel/include",
+                "/opt/ros/kinetic/include",
+                "/home/smartcar/harddisk/ubundisk/repos/autonomous_carla/ros/src/perception/detection/include",
+                "/home/smartcar/harddisk/ubundisk/repos/autonomous_carla/ros/src/localization/include",
+                "/home/smartcar/harddisk/ubundisk/repos/autonomous_carla/ros/src/demos/path_following/include",
+                "/home/smartcar/harddisk/ubundisk/repos/autonomous_carla/ros/src/perception/segmentation/include",
+                "/usr/include"
+            ],
+            "name": "Linux",
+            "intelliSenseMode": "gcc-x64"
+        }
+    ],
+    "version": 4
+}

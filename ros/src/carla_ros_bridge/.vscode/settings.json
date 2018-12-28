@@ -1,0 +1,7 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/smartcar/harddisk/ubundisk/repos/autonomous_carla/ros/devel/lib/python2.7/dist-packages",
+        "/opt/ros/kinetic/lib/python2.7/dist-packages",
+        "/home/smartcar/harddisk/ubundisk/repos/autonomous_carla/carla_0.9.2/PythonAPI/carla-0.9.2-py2.7-linux-x86_64.egg"
+    ]
+}
