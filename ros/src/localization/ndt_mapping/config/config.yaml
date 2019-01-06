@@ -1,0 +1,43 @@
+# ndt params
+ndt_resolution: 1.0
+ndt_step_size: 0.1
+ndt_trans_eps: 0.01
+ndt_max_iter: 20
+voxel_leaf_size: 2.0   # matching map
+
+# scan-points filter params
+min_scan_range: 3.0
+max_scan_range: 50.0
+
+
+# global map-set params
+min_add_scan_shift: 1.0  # add to voxeled_local_map
+min_update_target_map: 1.0  # add to global_map
+
+global_voxel_leafsize: 0.5   # (self defined) refiltered map-pub voxel leaf-size
+
+extract_length: 60  # extract target_map from voxeled_local_map
+extract_width: 50
+
+# method-type params
+ndt_method_type: 2
+
+use_imu: false
+use_odom: false
+imu_upside_down: false
+
+imu_topic: "/imu"
+odom_topic: "/odom_raw"
+# lidar_topic:  "/lslidar_point_cloud"                    # ese
+lidar_topic: "/velodyne_points"                           # smartcar_lab
+
+
+incremental_voxel_update: "true"
+
+
+visualize: true
+base_frame: "base_link"
+# laser_frame: "laser"                                  # ese
+laser_frame: "velodyne"                                 # smartcar_lab
+
+tf_timeout: 1.0

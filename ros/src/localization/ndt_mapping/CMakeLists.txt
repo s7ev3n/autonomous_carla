@@ -35,8 +35,6 @@ if (CUDA_FOUND)
 	add_definitions(-DCUDA_FOUND)
 	include_directories(${CUDA_INCLUDE_DIRS})
 endif ()
-
-
 link_directories(lib) # link compiled ndt_gpu .so
 add_executable(${PROJECT_NAME}_node src/ndt_mapping_node.cpp src/LidarMapping.cpp src/LidarMapping.h)
 target_link_libraries(${PROJECT_NAME}_node

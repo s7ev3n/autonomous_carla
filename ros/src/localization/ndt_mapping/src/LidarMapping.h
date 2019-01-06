@@ -45,6 +45,7 @@ namespace NDT{
       return mat;
     }
     };
+
   struct LidarMap{
     typedef boost::shared_ptr<LidarMap> Ptr;
     Pose pose;
@@ -57,6 +58,7 @@ namespace NDT{
   class LidarMapping{
     public:
     LidarMapping(): globalMap(new LidarMap()), localMap(new LidarMap()){
+      // 初始化参数，如果launch文件中有参数初始值，在这里其实可以覆盖掉
       maxIter = 30;
       ndt_res = 1.0;
       step_size = 0.1;

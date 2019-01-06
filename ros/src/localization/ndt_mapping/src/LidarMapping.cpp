@@ -19,7 +19,7 @@ namespace NDT {
         globalMap->pose = current_pose;
         localMap->pose = current_pose;
         ndt_map_pub = handle.advertise<sensor_msgs::PointCloud2>("ndt/map",10000);
-        current_pose_pub = handle.advertise<sensor_msgs::PointCloud2>("/current_pose", 1000);
+        current_pose_pub = handle.advertise<geometry_msgs::PoseStamped>("/current_pose", 1000);
 
         points_sub = handle.subscribe("/velodyne_points", 100000, &LidarMapping::points_callback, this);
 
@@ -33,6 +33,7 @@ namespace NDT {
         
         pcl::fromROSMsg(*input_cloud, tmp);
 
+        // 过滤掉太远和太近的点云
         for(pcl::PointCloud<PointT>::const_iterator item=tmp.begin(); item !=tmp.end(); item++){
             p.x = static_cast<float>((double) item->x);
             p.y = static_cast<float>((double) item->y);
@@ -42,7 +43,8 @@ namespace NDT {
                 scan.push_back(p);
             }
         }
-        //初始化地图
+
+        //初始化地图，第一帧点云不必ndt配准计算，直接放到地图中
         if(!map_initialed){
             pcl::transformPointCloud(scan, *transformed_scan_ptr, current_pose.rotateRPY());
             *(localMap->map_ptr) += scan;
@@ -67,6 +69,8 @@ namespace NDT {
         voxel_grid_filter.setInputCloud(scan_ptr);
         voxel_grid_filter.filter(*filtered_scan_ptr);
 
+
+        // ndt相关设置
         #ifdef CUDA_FOUND
             gpu_ndt_ptr->setTransformationEpsilon(trans_eps);
             gpu_ndt_ptr->setMaximumIterations(maxIter);
@@ -81,7 +85,8 @@ namespace NDT {
             pcl_ndt.setInputSource(filtered_scan_ptr);
         #endif
 
-        //简化guess
+        //这里是估算pose，即利用IMU等等信息，给出pose的估计值，估计值会影响ndt配准的效率和精度
+        //我们这里简化处理，讲当前计算出的pose当做估算pose
         guess_pose.x = current_pose.x;
 		guess_pose.y = current_pose.y;
 		guess_pose.z = current_pose.z;
@@ -173,6 +178,22 @@ namespace NDT {
 		pose.pose.orientation.z = q.z();
 		pose.pose.orientation.w = q.w();
 		pose.header.frame_id="map";
+        ROS_INFO("====================");
+        current_pose_pub.publish(pose);
+
+        ROS_INFO("====================");
+		pubCounter -= 1;
+		if (pubCounter == 0) {
+			pubCounter = 10;
+			ROS_INFO("output map_msg_ptr");
+			sensor_msgs::PointCloud2::Ptr map_msg_ptr(new sensor_msgs::PointCloud2);
+			// pcl::toROSMsg(*(localMap->map_ptr), *map_msg_ptr);
+			pcl::toROSMsg(*(globalMap->map_ptr), *map_msg_ptr);
+			map_msg_ptr->header.frame_id = "map";
+			ndt_map_pub.publish(*map_msg_ptr);
+        }
+
+    
     }
 
     void LidarMapping::update_region_map() {

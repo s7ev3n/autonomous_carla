@@ -7,7 +7,6 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   tf
   dynamic_reconfigure
-  #derived_object_msgs
 )
 
 catkin_python_setup()
@@ -25,7 +24,6 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
-  #derived_object_msgs
 )
 
 generate_dynamic_reconfigure_options(
