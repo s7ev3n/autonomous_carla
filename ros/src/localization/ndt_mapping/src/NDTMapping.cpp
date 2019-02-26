@@ -14,8 +14,8 @@ namespace NDTMapping{
 		handle.param<double>("region_move_shift", region_move_shift, 20.0);
 		handle.param<double>("region_x_length", region_x_length, 100.0);
 		handle.param<double>("region_y_length", region_y_length, 100.0);
-        //handle.param<std::string>("lidar_topic", lidar_topic, "/velodyne_points");
-        lidar_topic = "/carla/vehicle/059/autopilot/lidar/front/point_cloud";
+        handle.param<std::string>("lidar_topic", lidar_topic, "/velodyne_points");
+        //lidar_topic = "/carla/vehicle/059/autopilot/lidar/front/point_cloud";
         ROS_INFO("tf_x, tf_y, tf_z, tf_roll, tf_pitch, tf_yaw (%.4f, %.4f, %.4f, %.4f, %.4f, %.4f)", current_pose.x, current_pose.y, current_pose.z, current_pose.roll, current_pose.pitch, current_pose.yaw);
         globalMap->pose = current_pose;
         localMap->pose = current_pose;
