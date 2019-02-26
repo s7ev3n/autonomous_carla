@@ -29,15 +29,15 @@ imu_upside_down: false
 imu_topic: "/imu"
 odom_topic: "/odom_raw"
 # lidar_topic:  "/lslidar_point_cloud"                    # ese
-lidar_topic: "/velodyne_points"                           # smartcar_lab
-
-
+# lidar_topic: "/velodyne_points"                           # smartcar_lab
+lidar_topic: "/carla/vehicle/059/autopilot/lidar/front/point_cloud" # carla, vehicle number may change
+#/carla/vehicle/059/autopilot/lidar/front/point_cloud
 incremental_voxel_update: "true"
 
 
 visualize: true
 base_frame: "base_link"
 # laser_frame: "laser"                                  # ese
-laser_frame: "velodyne"                                 # smartcar_lab
-
+# laser_frame: "velodyne"                                 # smartcar_lab
+lidar_frame: "/carla/vehicle/059/autopilot/lidar/front/"
 tf_timeout: 1.0

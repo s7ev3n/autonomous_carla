@@ -1,4 +1,4 @@
-#include "LidarMapping.h"
+#include "NDTMapping.h"
 #include <iostream>
 #include <ros/ros.h>
 
@@ -7,7 +7,7 @@ int main(int argc, char** argv) {
     ros::init(argc, argv, "ndt_mapping");
     ros::NodeHandle nh;
 
-    NDT::LidarMapping mapping;
+    NDTMapping::NDTMapping mapping;
     mapping.setup(nh);
     ros::Rate(10);
     ros::spin();

@@ -69,7 +69,7 @@ You should see the Success message without any errors.
 
 First run the simulator (see carla documentation: http://carla.readthedocs.io/en/latest/)
 
-     ./CarlaUE4  -carla-server -windowed -ResX=320 -ResY=240
+    ./CarlaUE4.sh -windowed -ResX=320 -ResY=240 -benchmark -fps=10
 
 
 Wait for the message:
@@ -88,7 +88,13 @@ To start the ros bridge with rviz use:
 
 You can setup the vehicle configuration config/settings.yaml.
 
-Then you can make use of the CARLA Python API script manual_control.py.
+As we have not spawned any vehicle and have not added any sensors in our carla world there would not be any stream of data yet.
+
+You can make use of the CARLA Python API script manual_control.py.
+```
+cd <path/to/carla/>
+python manual_control.py
+```
 This spawns a vehicle with role_name='hero' which is interpreted as the ego
 vehicle as defined by the config/settings.yaml.
 

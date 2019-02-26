@@ -4,12 +4,16 @@
 ## OccupancyGrid Map 占据删格地图
 什么是占据删格地图呢？它将空间网格化，然后每个格子表示是否被占据的概率，0表示未被占据，100表示占据，-1表示不确定。
 参看这篇知乎文章：https://zhuanlan.zhihu.com/p/21738718
+
+
 那么它和Costmap（代价地图）有什么区别呢？我们来看下面的解释：
+```
 nav_msgs/OccupancyGrid is a ROS message. This is a map that can be passed around between tools, namely gmapping/karto, amcl, and move_base.
 
 costmap2d is a ROS package, which offers a costmap generation tool, which in fact is really 2.5D. That is, it does raytracing from sensor data into a 3d-voxel map, but it outputs a 2d costmap. It is mainly used via a C++ api, not the ROS message api. When used over ROS messages, it posts nav_msgs/GridCells on a variety of topics corresponding to obstacles, inflated obstacles, and unknown space.
 
 Now, in the context of global planner, all planners use the C++ costmap2d interface. And thus, the global costmap2d is typically initialized from some map, which is typically received over a latched topic using nav_msgs/OccupancyGrid. The costmap2d then can do things needed for planning, like inflating obstacles or adding sensor data to the costmap if desired/configured as such.
+```
 上面的意思表示，OccupancyGrid是ROS中的一种消息格式，而costmap代价地图主要用于路径规划，用于描述环境中的障碍物和自由空间。通常也用栅格地图表示，常见的整体代价地图和分层代价地图。有一个包costmap2d，是一个包用于生成costmap。
 
 我们暂且认为Autoware中的OccupancyGrid图和Costmap是一样的。
@@ -68,5 +72,9 @@ int index = g_cell_width * grid_y + grid_x;
 
 
 REF：
+
 1.https://blog.csdn.net/qq_16775293/article/details/84645528
+
 2.https://blog.csdn.net/sru_alo/article/details/84770855
+
+3.http://cdn.unrealengine.com/CrossToolchain_Linux/v12_clang-6.0.1-centos7.zip

@@ -22,7 +22,7 @@
 #endif
 
 
-namespace NDT{
+namespace NDTMapping{
   using PointT = pcl::PointXYZ;
 
   struct Pose{
@@ -55,9 +55,9 @@ namespace NDT{
     }
   };
 
-  class LidarMapping{
+  class NDTMapping{
     public:
-    LidarMapping(): globalMap(new LidarMap()), localMap(new LidarMap()){
+    NDTMapping(): globalMap(new LidarMap()), localMap(new LidarMap()){
       // 初始化参数，如果launch文件中有参数初始值，在这里其实可以覆盖掉
       maxIter = 30;
       ndt_res = 1.0;
@@ -113,6 +113,8 @@ namespace NDT{
     bool map_initialed;
     double region_x_length;
     double region_y_length;
+    std::string lidar_topic;
+    std::string lidar_frame;
 
     int pubCounter;
 

@@ -1,8 +1,8 @@
-#include "LidarMapping.h"
+#include "NDTMapping.h"
 
-namespace NDT {
+namespace NDTMapping{
 
-    void LidarMapping::setup(ros::NodeHandle &handle){
+    void NDTMapping::setup(ros::NodeHandle &handle){
         // init
         handle.param<double>("tf_x", current_pose.x, 0);
         handle.param<double>("tf_y", current_pose.y, 0);
@@ -14,18 +14,19 @@ namespace NDT {
 		handle.param<double>("region_move_shift", region_move_shift, 20.0);
 		handle.param<double>("region_x_length", region_x_length, 100.0);
 		handle.param<double>("region_y_length", region_y_length, 100.0);
-
+        //handle.param<std::string>("lidar_topic", lidar_topic, "/velodyne_points");
+        lidar_topic = "/carla/vehicle/059/autopilot/lidar/front/point_cloud";
         ROS_INFO("tf_x, tf_y, tf_z, tf_roll, tf_pitch, tf_yaw (%.4f, %.4f, %.4f, %.4f, %.4f, %.4f)", current_pose.x, current_pose.y, current_pose.z, current_pose.roll, current_pose.pitch, current_pose.yaw);
         globalMap->pose = current_pose;
         localMap->pose = current_pose;
         ndt_map_pub = handle.advertise<sensor_msgs::PointCloud2>("ndt/map",10000);
         current_pose_pub = handle.advertise<geometry_msgs::PoseStamped>("/current_pose", 1000);
-
-        points_sub = handle.subscribe("/velodyne_points", 100000, &LidarMapping::points_callback, this);
+        ROS_INFO("LIDAR TOPIC:", lidar_topic);
+        points_sub = handle.subscribe(lidar_topic, 100000, &NDTMapping::points_callback, this);
 
     }
 
-    void LidarMapping::points_callback(const sensor_msgs::PointCloud2::ConstPtr &input_cloud){
+    void NDTMapping::points_callback(const sensor_msgs::PointCloud2::ConstPtr &input_cloud){
         pcl::PointCloud<PointT> scan, tmp;
         pcl::PointCloud<PointT>::Ptr filtered_scan_ptr(new pcl::PointCloud<PointT>());
         pcl::PointCloud<PointT>::Ptr transformed_scan_ptr(new pcl::PointCloud<PointT>);
@@ -196,7 +197,7 @@ namespace NDT {
     
     }
 
-    void LidarMapping::update_region_map() {
+    void NDTMapping::update_region_map() {
 		*(globalMap->map_ptr) += *(localMap->map_ptr);
 		double min_x = current_pose.x - region_x_length / 2.0;
 		double max_x = current_pose.x + region_x_length / 2.0;

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Copyright (c) 2018 Intel Labs.
+# Copyright (c) 2018-2019 Intel Labs.
 #
 # authors: Bernd Gassmann (bernd.gassmann@intel.com)
 #
@@ -9,6 +9,7 @@
 Classes to handle Carla vehicles
 """
 import sys
+import datetime
 import numpy
 
 from simple_pid import PID
@@ -161,7 +162,7 @@ class EgoVehicle(Vehicle):
         vehicle_control.steer = self.info.output.steer
         vehicle_control.throttle = self.info.output.throttle
         vehicle_control.reverse = self.info.output.reverse
-        # send control command out
+
         self.carla_actor.apply_control(vehicle_control)
 
     def update_current_values(self):
@@ -302,8 +303,13 @@ class AckermannControlVehicle(EgoVehicle):
 
         # PID controller
         # the controller has to run with the simulation time, not with real-time
+        #
+        # To prevent "float division by zero" within PID controller initialize it with
+        # a previous point in time (the error happens because the time doesn't
+        # change between initialization and first call, therefore dt is 0)
         sys.modules['simple_pid.PID']._current_time = (       # pylint: disable=protected-access
-            lambda: AckermannControlVehicle.get_current_ros_time(self).to_sec())
+            lambda: AckermannControlVehicle.get_current_ros_time(self).to_sec() - 0.1)
+
         # we might want to use a PID controller to reach the final target speed
         self.speed_controller = PID(Kp=0.0,
                                     Ki=0.0,
@@ -316,13 +322,20 @@ class AckermannControlVehicle(EgoVehicle):
                                     sample_time=0.05,
                                     output_limits=(-1, 1))
 
+        # use the correct time for further calculations
+        sys.modules['simple_pid.PID']._current_time = (       # pylint: disable=protected-access
+            lambda: AckermannControlVehicle.get_current_ros_time(self).to_sec())
+
         self.reconfigure_server = Server(
             EgoVehicleControlParameterConfig,
             namespace=self.topic_name(),
             callback=(lambda config, level: AckermannControlVehicle.reconfigure_pid_parameters(
                 self, config, level)))
 
-        # ROS subsriber
+        # ROS subscriber
+        # the lastMsgReceived is updated within the callback
+        # (it's used to stop updating the carla client control if no new messages were received)
+        self.lastMsgReceived = datetime.datetime(datetime.MINYEAR, 1, 1)
         self.control_subscriber = rospy.Subscriber(
             self.topic_name() + "/ackermann_cmd",
             AckermannDrive, self.ackermann_command_updated)
@@ -386,6 +399,9 @@ class AckermannControlVehicle(EgoVehicle):
         :type ros_ackermann_drive: ackermann_msgs.AckermannDrive
         :return:
         """
+        # update the last reception timestamp
+        self.lastMsgReceived = datetime.datetime.now()
+
         # set target values
         self.set_target_steering_angle(ros_ackermann_drive.steering_angle)
         self.set_target_speed(ros_ackermann_drive.speed)
@@ -447,7 +463,10 @@ class AckermannControlVehicle(EgoVehicle):
             self.update_drive_vehicle_control_command()
 
         # apply control command to CARLA
-        self.apply_control()
+        # (only if a control message was received in the last 3 seconds. This is a workaround
+        # for rospy.subscriber.get_num_connections() not working in Ubuntu 16.04)
+        if (self.lastMsgReceived + datetime.timedelta(0, 3)) > datetime.datetime.now():
+            self.apply_control()
 
     def control_steering(self):
         """

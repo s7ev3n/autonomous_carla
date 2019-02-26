@@ -25,13 +25,13 @@ def main():
 
         #add a lidar
         lidar_bp = bluelib.find('sensor.lidar.ray_cast')
-        lidar_bp.set_attribute('range', '1000')
-        lidar_bp.set_attribute('channels', '32')
+        lidar_bp.set_attribute('range', '10000')
+        lidar_bp.set_attribute('channels', '64')
         lidar_bp.set_attribute('points_per_second', '600000')
         lidar_bp.set_attribute('rotation_frequency', '10.0')
-        lidar_bp.set_attribute('upper_fov', '20.0')
-        lidar_bp.set_attribute('lower_fov','-20.0')
-        lidar_transform = carla.Transform(carla.Location(z=2.5))
+        lidar_bp.set_attribute('upper_fov', '30.0')
+        lidar_bp.set_attribute('lower_fov','-30.0')
+        lidar_transform = carla.Transform(carla.Location(z=2.))
         lidar = world.spawn_actor(lidar_bp, lidar_transform, attach_to=vehicle)
         actor_list.append(lidar)
    
