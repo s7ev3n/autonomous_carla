@@ -57,6 +57,8 @@ Apple的工作，参考https://zhuanlan.zhihu.com/p/40051716
 >The goal of the depth completion task is to generate dense depth predictions from sparse and irregular point clouds which are
 mapped to a 2D plane.
 
+>我觉得首先要说明的是，只有sparse depth预测，得到的结果也是还可以的，当然，这都是基于数据集中64线的激光雷达来说的。我们的motivation是更稀疏的sparse depth，配合rgb，得到较近距离内可用的深度图，可用指的是点云内物体检测。
+
 ### 1.Sparse and Dense Data with CNNs:Depth Completion and Semantic Segmentation
 比较实在的文章，没有fancy的模型，做了实验证明了一些事情：
 1. vality mask没啥用，在后面几层就失效了；
@@ -67,5 +69,23 @@ mapped to a 2D plane.
 on unobserved pixels available in the ground truth
 
 ### 2.Sparse and noisy LiDAR completion with RGB guidance and uncertainty
+![sparse&noisylidar](./assets/sparse$noisyLidar.png)
+当前KITTI depth排名第一的工作，感觉方法上挺简单的啊。
+它有所谓的global和local branch，global是作用在rgb上的，可以提取更多的边缘信息，因为这里的网络是我语义分割对比过的ERFNet；local作用在sparse depth与上面global出来的一个guidance map结合，放入了两个hourglass网络，更多地关注sparse depth中有准确点的信息，所以称为local。
 
-PCN: Point Completion Network 这个更像是从点云中补全点云
+还算挺有意思，我觉得我改进起来应该不难。
+
+
+### 3.DFuseNet: Deep Fusion of RGB and Sparse Depth Information for Image
+![dfusenet](./assets/dfusenet.png)
+几个细节：
+1.We use a simple sequence of morphological operations and Gaussian blurring operations to fill the holes in the sparse depth image with depth values from nearby valid points such that no holes remain.The filled depth image is then normalized by the maximum depth value in the dataset. 对稀疏的点云图做了高斯模糊，填充稀疏的地方，再做归一化。这个有点意思，不知道有没有实验支撑这么做的原因
+2.depth和rgb两路不同的网络，对depth，用大的卷积核，层数少
+3.feature concat一下
+4.最后的输出图经过1x1 conv过sigmod函数，再rescale回真实depth
+5.Loss
+5.1 we calculate the loss only at pixels where ground truth depth exists and average over the total number of ground truth points. 为了RMSE好看，用了L2 loss
+5.2 一个L2的双目loss
+5.3 一个Smooth loss,an L1 norm on the second order derivative of the predicted dense
+image。还不是特别理解这个loss，但是感觉smooth loss非常有必要。
+
