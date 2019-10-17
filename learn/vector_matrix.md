@@ -44,7 +44,7 @@ $$
 
 **叉积的几何意义**
 $\|\overrightarrow{\mathbf{a}} \times \overrightarrow{\mathbf{b}}\|=(\|\overrightarrow{\mathbf{a}}\|\|\overrightarrow{\mathbf{b}}\| \sin \theta) \overrightarrow \mathbf{n_{0}}$
-其中$\overrightarrow \mathbf{n_{0}}$是垂直于$\overrightarrow{\mathbf{a}}$和$\overrightarrow{\mathbf{b}}$展成平面的单位法向量。
+其中$\overrightarrow \mathbf{n_{0}}$是v垂直于$\overrightarrow{\mathbf{a}}$和$\overrightarrow{\mathbf{b}}$展成平面的单位法向量。
 
 ```python
 import numpy as np
